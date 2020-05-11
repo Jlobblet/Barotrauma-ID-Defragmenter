@@ -39,11 +39,12 @@ if __name__ == "__main__":
         for node in tree.iter():
             for attribute in attributes:
                 if value := node.attrib.get(attribute):
-                    matches = re.findall(contained_pattern.format(VALUE=r"\d+"), value)
-                    if matches:
+                    if matches := re.findall(
+                        contained_pattern.format(VALUE=r"\d+"), value
+                    ):
                         for match in matches:
                             ids.add(int(match))
-                            
+
             cont = True
             count = 0
             while cont:
@@ -52,10 +53,10 @@ if __name__ == "__main__":
                     count += 1
                 else:
                     cont = False
-    
+
     ids = list(ids)
     ids.sort()
-    
+
     id_map = dict()
     for new, old in enumerate(ids):
         id_map[old] = new + 1
@@ -64,10 +65,18 @@ if __name__ == "__main__":
         for node in tree.iter():
             for attribute in attributes:
                 if value := node.attrib.get(attribute):
-                    matches = re.findall(contained_pattern.format(VALUE=r"\d+"), value)
-                    if matches:
+                    if matches := re.findall(
+                        contained_pattern.format(VALUE=r"\d+"), value
+                    ):
                         for match in matches:
-                            node.set(attribute, value := re.sub(contained_pattern.format(VALUE=str(match)), str(id_map[int(match)]), value))
+                            node.set(
+                                attribute,
+                                value := re.sub(
+                                    contained_pattern.format(VALUE=str(match)),
+                                    str(id_map[int(match)]),
+                                    value,
+                                ),
+                            )
             cont = True
             count = 0
             while cont:
@@ -75,8 +84,8 @@ if __name__ == "__main__":
                     node.set(f"linkedto{count}", str(id_map[int(linkedto)]))
                     count += 1
                 else:
-                    cont = False                    
-    
+                    cont = False
+
     for f, x in data.items():
         ext = path.splitext(f)[-1].lower()
         if ext == ".sub":
@@ -84,4 +93,3 @@ if __name__ == "__main__":
         else:
             with open(f, "wb+") as sub:
                 sub.write(ET.tostring(x))
-
