@@ -7,8 +7,16 @@ import xml.etree.ElementTree as ET
 contained_pattern = r"(?:(?<=,)|^){VALUE}(?:(?=,)|$)"
 attributes = ["ID", "w", "linked", "contained", "gap", "ladders"]
 
-parser = argparse.ArgumentParser()
-parser.add_argument("files", nargs="+", type=str)
+parser = argparse.ArgumentParser(
+    description="""Defragment ID values in any number of .sub and .xml files.
+    
+    Designed to work on precisely two files - a gamesession.xml and a
+    .sub file from an extracted .save file. YMMV with other options.
+    
+    Defragments all files at once, so that they won't have any overlapping
+    IDs."""
+)
+parser.add_argument("files", nargs="+", type=str, help="The path to a file to defragment.")
 
 
 def load_sub(sub_filepath):
